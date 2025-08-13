@@ -538,14 +538,18 @@ export default function DataStructuresPage() {
                 <TabsContent value="visualization" className="mt-6">
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gradient">Interactive Visualization</h3>
-                    <DataStructureVisualization type={selectedStructure} />
+                    <DataStructureVisualization 
+                      type={selectedStructure} 
+                      animationSpeed={1}
+                      darkMode={false}
+                    />
                   </div>
                 </TabsContent>
 
                 <TabsContent value="quiz" className="mt-6">
                   <div className="space-y-4">
                     <h3 className="text-lg font-semibold text-gradient">Test Your Knowledge</h3>
-                    <Quiz questions={quizQuestions} />
+                    <Quiz questions={quizQuestions} onComplete={() => {}} />
                   </div>
                 </TabsContent>
               </Tabs>

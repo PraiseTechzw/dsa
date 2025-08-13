@@ -175,7 +175,10 @@ export default function TreesPage() {
           <CardDescription>Test your knowledge of tree data structures</CardDescription>
         </CardHeader>
         <CardContent>
-          <Quiz questions={treeQuiz} />
+                              <Quiz 
+                      questions={treeQuiz} 
+                      onComplete={(score) => console.log(`Quiz completed with score: ${score}%`)}
+                    />
         </CardContent>
       </Card>
     </div>

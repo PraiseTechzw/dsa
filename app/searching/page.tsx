@@ -225,7 +225,10 @@ export default function SearchingPage() {
           <CardDescription>Test your knowledge of searching algorithms</CardDescription>
         </CardHeader>
         <CardContent>
-          <Quiz questions={searchingQuiz} />
+                              <Quiz 
+                      questions={searchingQuiz} 
+                      onComplete={(score) => console.log(`Quiz completed with score: ${score}%`)}
+                    />
         </CardContent>
       </Card>
       <Card>
