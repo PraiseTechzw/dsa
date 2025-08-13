@@ -18,7 +18,7 @@ interface QuizQuestion {
 
 interface QuizProps {
   questions: QuizQuestion[]
-  onComplete: (score: number) => void
+  onComplete?: (score: number) => void
 }
 
 export default function Quiz({ questions, onComplete }: QuizProps) {
@@ -48,7 +48,7 @@ export default function Quiz({ questions, onComplete }: QuizProps) {
       const correctAnswers = newAnswers.filter((answer, index) => answer === questions[index].correct).length
       const score = Math.round((correctAnswers / questions.length) * 100)
       setQuizCompleted(true)
-      onComplete(score)
+      onComplete?.(score)
     }
   }
 

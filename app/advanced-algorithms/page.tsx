@@ -136,7 +136,8 @@ const advancedAlgorithmsQuiz = [
       "It has a linear time complexity",
       "It can find the shortest path between all pairs of nodes",
     ],
-    correctAnswer: "It always finds the shortest path in any graph",
+    correct: 0,
+    explanation: "Dijkstra's algorithm guarantees finding the shortest path in graphs with non-negative edge weights, making it reliable for applications like GPS navigation and network routing.",
   },
   {
     question: "What is the key feature of the A* search algorithm?",
@@ -146,7 +147,8 @@ const advancedAlgorithmsQuiz = [
       "It uses a heuristic function to estimate the cost to the goal",
       "It only works on unweighted graphs",
     ],
-    correctAnswer: "It uses a heuristic function to estimate the cost to the goal",
+    correct: 2,
+    explanation: "A* uses a heuristic function to estimate the cost from the current node to the goal, which helps it make informed decisions about which path to explore next, making it more efficient than uninformed search algorithms.",
   },
 ]
 
