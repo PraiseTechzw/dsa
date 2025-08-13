@@ -74,11 +74,11 @@ export async function executePythonCode(code: string): Promise<ExecutionResult> 
 
 function generateOutput(code: string): string {
   if (code.includes("print")) {
-    const printMatches = code.match(/print$$(.*?)$$/g)
+    const printMatches = code.match(/print\s*\((.*?)\)/g)
     if (printMatches) {
       return printMatches
         .map((match) => {
-          const content = match.replace(/print$$|$$/g, "").replace(/['"]/g, "")
+          const content = match.replace(/print\s*\(|\)/g, "").replace(/['"]/g, "")
           return content
         })
         .join("\n")
@@ -97,11 +97,11 @@ Space Complexity: O(1)`
     return `Function '${functionName}' defined successfully.
 Ready for execution.
 Use ${functionName}() to call the function.`
-  } else {
-    return `Code executed successfully!
+  }
+  
+  return `Code executed successfully!
 No explicit output generated.
 All operations completed without errors.`
-  }
 }
 
 function analyzeComplexity(code: string) {

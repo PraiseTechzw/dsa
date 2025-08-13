@@ -111,17 +111,20 @@ const treeQuiz = [
   {
     question: "What is the maximum number of children a node can have in a binary tree?",
     options: ["1", "2", "3", "4"],
-    correctAnswer: "2",
+    correct: 1,
+    explanation: "A binary tree can have at most 2 children per node, hence the name 'binary'.",
   },
   {
     question: "Which traversal visits the root node first?",
     options: ["In-order", "Pre-order", "Post-order", "Level-order"],
-    correctAnswer: "Pre-order",
+    correct: 1,
+    explanation: "Pre-order traversal visits the root node first, then the left subtree, then the right subtree.",
   },
   {
     question: "In a full binary tree, every node has either ____ children.",
     options: ["0 or 1", "1 or 2", "0 or 2", "exactly 2"],
-    correctAnswer: "0 or 2",
+    correct: 2,
+    explanation: "In a full binary tree, every node has either 0 children (leaf node) or exactly 2 children.",
   },
 ]
 

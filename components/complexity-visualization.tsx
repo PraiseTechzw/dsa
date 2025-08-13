@@ -52,7 +52,7 @@ const ComplexityVisualization: React.FC<ComplexityVisualizationProps> = ({ selec
     const step = Math.max(1, Math.floor(maxN / 20))
 
     for (let n = 1; n <= maxN; n += step) {
-      const point = { n }
+      const point: { [key: string]: number } = { n }
       Object.entries(complexityFunctions).forEach(([complexity, func]) => {
         point[complexity] = func(n)
       })
@@ -72,7 +72,7 @@ const ComplexityVisualization: React.FC<ComplexityVisualizationProps> = ({ selec
 
   const renderOperationsVisualization = () => {
     const n = inputSize[0]
-    const operations = complexityFunctions[selectedComplexity](n)
+    const operations = complexityFunctions[selectedComplexity as keyof typeof complexityFunctions](n)
     const maxOps = 100
     const displayOps = Math.min(operations, maxOps)
 
@@ -89,7 +89,7 @@ const ComplexityVisualization: React.FC<ComplexityVisualizationProps> = ({ selec
           {Array.from({ length: Math.floor(displayOps) }, (_, i) => (
             <div
               key={i}
-              className={`${complexityColors[selectedComplexity]} rounded-sm transition-all duration-300`}
+              className={`${complexityColors[selectedComplexity as keyof typeof complexityColors]} rounded-sm transition-all duration-300`}
               style={{
                 height: `${Math.max(8, ((i + 1) / displayOps) * 100)}%`,
                 opacity: isAnimating && i > animationStep ? 0.3 : 1,
@@ -148,7 +148,7 @@ const ComplexityVisualization: React.FC<ComplexityVisualizationProps> = ({ selec
                     <div
                       key={complexity}
                       className={`w-full max-w-[20px] rounded-sm transition-all duration-300 ${
-                        complexityColors[complexity]
+                        complexityColors[complexity as keyof typeof complexityColors]
                       } ${selectedComplexity === complexity ? "ring-2 ring-white" : "opacity-70"}`}
                       style={{ height: `${getBarHeight(point[complexity])}px` }}
                       title={`${complexity}: ${Math.floor(point[complexity])}`}
@@ -163,7 +163,7 @@ const ComplexityVisualization: React.FC<ComplexityVisualizationProps> = ({ selec
           <div className="flex flex-wrap gap-2 mt-4">
             {Object.keys(complexityFunctions).map((complexity) => (
               <div key={complexity} className="flex items-center gap-2">
-                <div className={`w-3 h-3 rounded-sm ${complexityColors[complexity]}`} />
+                <div className={`w-3 h-3 rounded-sm ${complexityColors[complexity as keyof typeof complexityColors]}`} />
                 <span className="text-sm font-mono">{complexity}</span>
               </div>
             ))}

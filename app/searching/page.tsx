@@ -148,7 +148,8 @@ const searchingQuiz = [
   {
     question: "Which searching algorithm has a time complexity of O(log n)?",
     options: ["Linear Search", "Binary Search", "Hash Table Lookup", "Interpolation Search"],
-    correctAnswer: "Binary Search",
+    correct: 1,
+    explanation: "Binary Search has O(log n) time complexity because it divides the search space in half with each comparison.",
   },
   {
     question: "What is the main advantage of using a hash table for searching?",
@@ -158,12 +159,14 @@ const searchingQuiz = [
       "It requires less memory than other data structures",
       "It provides fast average-case performance for lookups",
     ],
-    correctAnswer: "It provides fast average-case performance for lookups",
+    correct: 3,
+    explanation: "Hash tables provide fast average-case performance for lookups, typically O(1) in the average case.",
   },
   {
     question: "Which searching technique is most suitable for small, unsorted lists?",
     options: ["Linear Search", "Binary Search", "Hash Table", "B-Tree Search"],
-    correctAnswer: "Linear Search",
+    correct: 0,
+    explanation: "Linear Search is most suitable for small, unsorted lists as it's simple and efficient for small datasets.",
   },
 ]
 
