@@ -136,7 +136,8 @@ const advancedAlgorithmsQuiz = [
       "It has a linear time complexity",
       "It can find the shortest path between all pairs of nodes",
     ],
-    correctAnswer: "It always finds the shortest path in any graph",
+    correct: 0,
+    explanation: "Dijkstra's algorithm guarantees finding the shortest path in graphs with non-negative edge weights.",
   },
   {
     question: "What is the key feature of the A* search algorithm?",
@@ -146,12 +147,17 @@ const advancedAlgorithmsQuiz = [
       "It uses a heuristic function to estimate the cost to the goal",
       "It only works on unweighted graphs",
     ],
-    correctAnswer: "It uses a heuristic function to estimate the cost to the goal",
+    correct: 2,
+    explanation: "A* uses a heuristic function to estimate the cost from the current node to the goal.",
   },
 ]
 
 export default function AdvancedAlgorithmsPage() {
   const [activeAlgorithm, setActiveAlgorithm] = useState(advancedAlgorithms[0].name)
+  
+  const handleQuizComplete = (score: number) => {
+    console.log(`Quiz completed with score: ${score}%`)
+  }
 
   return (
     <div className="space-y-6">
@@ -207,7 +213,7 @@ export default function AdvancedAlgorithmsPage() {
           <CardDescription>Test your knowledge of advanced algorithms</CardDescription>
         </CardHeader>
         <CardContent>
-          <Quiz questions={advancedAlgorithmsQuiz} />
+          <Quiz questions={advancedAlgorithmsQuiz} onComplete={handleQuizComplete} />
         </CardContent>
       </Card>
     </div>
