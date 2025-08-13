@@ -59,7 +59,7 @@ interface PerformanceMetric {
   timestamp: Date
   executionTime: number
   memoryUsage: number
-  status: "success" | "error"
+  status: "success" | "error" | "timeout"
 }
 
 interface AICodeHelperProps {
@@ -214,110 +214,6 @@ const analyzeComplexity = (code: string) => {
   }
 
   return { time: timeComplexity, space: spaceComplexity }
-}
-
-// Open source AI response generation using Hugging Face API
-const generateAIResponse = async (
-  model: string,
-  userInput: string,
-  topic: string,
-  category: string,
-  code?: string,
-): Promise<string> => {
-  try {
-    const selectedModel = aiModels[model as keyof typeof aiModels] || aiModels.codellama
-
-    const systemPrompt = `You are an expert programming tutor specializing in ${topic} and ${category === "data" ? "data structures" : category === "algorithm" ? "algorithms" : "computer science fundamentals"}. 
-
-Provide detailed, educational responses that include:
-1. Clear explanations with examples
-2. Working Python code when requested
-3. Performance analysis and optimization tips
-4. Best practices and common pitfalls
-5. Real-world applications
-
-Format your responses with markdown for better readability.`
-
-    const userPrompt = code ? `${userInput}\n\nHere's my current code:\n\`\`\`python\n${code}\n\`\`\`` : userInput
-
-    // Use our local API endpoint that connects to Hugging Face
-    const response = await fetch("/api/ai", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        message: userPrompt,
-        model: selectedModel.model,
-        topic,
-        category,
-        code,
-      }),
-    })
-
-    if (!response.ok) {
-      throw new Error(`API request failed: ${response.status}`)
-    }
-
-    const data = await response.json()
-    return data.response || "Sorry, I couldn't generate a response at the moment."
-
-  } catch (error) {
-    console.error("AI API Error:", error)
-    return `I apologize, but I'm currently experiencing connectivity issues. Here's a helpful response based on your query about ${topic}:
-
-## ${topic} - Key Concepts
-
-**Understanding ${category === "data" ? "Data Structures" : "Algorithms"}:**
-
-${
-  category === "data"
-    ? `Data structures are fundamental ways of organizing and storing data in computer memory. For ${topic}:
-
-- **Purpose**: Efficient data organization and access
-- **Key Operations**: Insert, delete, search, traverse
-- **Performance**: Consider time/space complexity trade-offs
-
-**Common Implementation Pattern:**
-\`\`\`python
-class ${topic.replace(/\s+/g, "")}:
-    def __init__(self):
-        self.data = []
-    
-    def insert(self, value):
-        # Implementation here
-        pass
-    
-    def search(self, value):
-        # Implementation here
-        pass
-\`\`\``
-    : `Algorithms are step-by-step procedures for solving computational problems. For ${topic}:
-
-- **Approach**: Systematic problem-solving method
-- **Complexity**: Analyze time and space requirements
-- **Optimization**: Consider different strategies
-
-**Basic Implementation:**
-\`\`\`python
-def ${topic.toLowerCase().replace(/\s+/g, "_")}(data):
-    # Algorithm implementation
-    result = []
-    for item in data:
-        # Process each item
-        result.append(process(item))
-    return result
-\`\`\``
-}
-
-**Next Steps:**
-- Try implementing the basic version
-- Test with different input sizes
-- Analyze performance characteristics
-- Consider optimization opportunities
-
-Would you like me to elaborate on any specific aspect?`
-  }
 }
 
 // Open source AI response generation using Hugging Face API
