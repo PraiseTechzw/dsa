@@ -281,7 +281,7 @@ const quizQuestions = [
 ]
 
 export default function ComplexityAnalysisPage() {
-  const [selectedComplexity, setSelectedComplexity] = useState("O(1)")
+  const [selectedComplexity, setSelectedComplexity] = useState<keyof typeof complexityExamples>("O(1)")
   const [progress, setProgress] = useState(0)
   const [activeTab, setActiveTab] = useState("overview")
 
@@ -354,7 +354,7 @@ export default function ComplexityAnalysisPage() {
                       ? `bg-gradient-to-r ${data.color} text-white hover:opacity-90`
                       : ""
                   }`}
-                  onClick={() => setSelectedComplexity(complexity)}
+                  onClick={() => setSelectedComplexity(complexity as keyof typeof complexityExamples)}
                 >
                   <div className="font-mono font-bold text-sm">{complexity}</div>
                   <div className="text-xs text-center opacity-80">{data.name}</div>
@@ -362,7 +362,7 @@ export default function ComplexityAnalysisPage() {
               ))}
             </div>
 
-            <Select value={selectedComplexity} onValueChange={setSelectedComplexity}>
+            <Select value={selectedComplexity} onValueChange={(value) => setSelectedComplexity(value as keyof typeof complexityExamples)}>
               <SelectTrigger className="md:hidden">
                 <SelectValue />
               </SelectTrigger>
