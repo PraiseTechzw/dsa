@@ -55,6 +55,9 @@ export default function DashboardLayout({ children }: { children: any }) {
     return currentItem?.title || "Data Structures & Algorithms"
   }
 
+  // Get the current feature icon component
+  const CurrentFeatureIcon = aiFeatures[activeFeature].icon
+
   return (
     <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
       {/* Enhanced Sidebar */}
@@ -129,7 +132,7 @@ export default function DashboardLayout({ children }: { children: any }) {
               >
                 <div className="bg-gradient-to-r from-violet-500/10 to-emerald-500/10 rounded-xl p-3 border border-violet-200/50 dark:border-violet-700/50">
                   <div className="flex items-center gap-2 mb-2">
-                    {aiFeatures[activeFeature].icon({ className: "h-4 w-4 text-violet-600" })}
+                    <CurrentFeatureIcon className="h-4 w-4 text-violet-600" />
                     <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
                       {aiFeatures[activeFeature].title}
                     </span>
