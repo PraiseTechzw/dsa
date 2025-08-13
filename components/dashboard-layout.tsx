@@ -7,25 +7,89 @@ import { motion, AnimatePresence } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { ChevronLeft, ChevronRight, LayoutDashboard, Database, GitBranch, Search, SortAsc, Network, Workflow, TreePine, Route, Zap, BarChart3, BookOpen, Bot, Sparkles, Brain, Lightbulb, Target, TrendingUp } from 'lucide-react'
+import {
+  ChevronLeft,
+  ChevronRight,
+  LayoutDashboard,
+  Database,
+  GitBranch,
+  Search,
+  SortAsc,
+  Network,
+  Workflow,
+  TreePine,
+  Route,
+  Zap,
+  BarChart3,
+  BookOpen,
+  Bot,
+  Sparkles,
+  Brain,
+  Lightbulb,
+  Target,
+  TrendingUp,
+  X,
+  Menu,
+} from "lucide-react"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import AICodeHelper from "@/components/ai-code-helper"
 
 const sidebarItems = [
-  { icon: LayoutDashboard, title: "Introduction", href: "/introduction", color: "from-violet-500 to-purple-600" },
-  { icon: Database, title: "Data Structures", href: "/data-structures", color: "from-blue-500 to-cyan-600" },
-  { icon: GitBranch, title: "Algorithms", href: "/algorithms", color: "from-emerald-500 to-teal-600" },
-  { icon: TreePine, title: "Trees", href: "/trees", color: "from-green-500 to-emerald-600" },
-  { icon: Search, title: "Searching", href: "/searching", color: "from-orange-500 to-amber-600" },
-  { icon: SortAsc, title: "Sorting", href: "/sorting", color: "from-red-500 to-rose-600" },
-  { icon: Network, title: "Graphs", href: "/graphs", color: "from-indigo-500 to-blue-600" },
-  { icon: Route, title: "Dijkstra's", href: "/dijkstras", color: "from-purple-500 to-violet-600" },
-  { icon: Zap, title: "Kruskal's", href: "/kruskals", color: "from-yellow-500 to-orange-600" },
-  { icon: BookOpen, title: "Prim's", href: "/prims", color: "from-pink-500 to-rose-600" },
-  { icon: BarChart3, title: "Complexity Analysis", href: "/complexity-analysis", color: "from-teal-500 to-cyan-600" },
-  { icon: Workflow, title: "Advanced Algorithms", href: "/advanced-algorithms", color: "from-slate-500 to-gray-600" },
+  {
+    icon: LayoutDashboard,
+    title: "Introduction",
+    href: "/introduction",
+    color: "from-violet-500 to-purple-600",
+    category: "foundation",
+  },
+  {
+    icon: Database,
+    title: "Data Structures",
+    href: "/data-structures",
+    color: "from-blue-500 to-cyan-600",
+    category: "data",
+  },
+  {
+    icon: GitBranch,
+    title: "Algorithms",
+    href: "/algorithms",
+    color: "from-emerald-500 to-teal-600",
+    category: "algorithm",
+  },
+  { icon: TreePine, title: "Trees", href: "/trees", color: "from-green-500 to-emerald-600", category: "data" },
+  {
+    icon: Search,
+    title: "Searching",
+    href: "/searching",
+    color: "from-orange-500 to-amber-600",
+    category: "algorithm",
+  },
+  { icon: SortAsc, title: "Sorting", href: "/sorting", color: "from-red-500 to-rose-600", category: "algorithm" },
+  { icon: Network, title: "Graphs", href: "/graphs", color: "from-indigo-500 to-blue-600", category: "data" },
+  {
+    icon: Route,
+    title: "Dijkstra's",
+    href: "/dijkstras",
+    color: "from-purple-500 to-violet-600",
+    category: "algorithm",
+  },
+  { icon: Zap, title: "Kruskal's", href: "/kruskals", color: "from-yellow-500 to-orange-600", category: "algorithm" },
+  { icon: BookOpen, title: "Prim's", href: "/prims", color: "from-pink-500 to-rose-600", category: "algorithm" },
+  {
+    icon: BarChart3,
+    title: "Complexity Analysis",
+    href: "/complexity-analysis",
+    color: "from-teal-500 to-cyan-600",
+    category: "foundation",
+  },
+  {
+    icon: Workflow,
+    title: "Advanced Algorithms",
+    href: "/advanced-algorithms",
+    color: "from-slate-500 to-gray-600",
+    category: "algorithm",
+  },
 ]
 
 const aiFeatures = [
@@ -38,8 +102,26 @@ const aiFeatures = [
 export default function DashboardLayout({ children }: { children: any }) {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [aiHelperOpen, setAiHelperOpen] = useState(false)
+  const [aiFullScreen, setAiFullScreen] = useState(false)
   const [activeFeature, setActiveFeature] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const pathname = usePathname()
+
+  // Check for mobile screen size
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768
+      setIsMobile(mobile)
+      if (mobile) {
+        setSidebarOpen(false)
+        setAiHelperOpen(false)
+      }
+    }
+
+    checkMobile()
+    window.addEventListener("resize", checkMobile)
+    return () => window.removeEventListener("resize", checkMobile)
+  }, [])
 
   // Auto-cycle through AI features
   useEffect(() => {
@@ -55,18 +137,71 @@ export default function DashboardLayout({ children }: { children: any }) {
     return currentItem?.title || "Data Structures & Algorithms"
   }
 
+  // Get current category for design differentiation
+  const getCurrentCategory = () => {
+    const currentItem = sidebarItems.find((item) => item.href === pathname)
+    return currentItem?.category || "foundation"
+  }
+
   // Get the current feature icon component
   const CurrentFeatureIcon = aiFeatures[activeFeature].icon
 
+  // Handle AI helper toggle
+  const toggleAiHelper = () => {
+    if (isMobile) {
+      setAiFullScreen(!aiFullScreen)
+    } else {
+      setAiHelperOpen(!aiHelperOpen)
+    }
+  }
+
+  // Category-based design themes
+  const getCategoryTheme = (category: string) => {
+    switch (category) {
+      case "data":
+        return {
+          bg: "from-blue-50 via-cyan-50 to-teal-50 dark:from-blue-950/20 dark:via-cyan-950/20 dark:to-teal-950/20",
+          accent: "from-blue-500 to-cyan-500",
+          border: "border-blue-200/50 dark:border-blue-700/50",
+        }
+      case "algorithm":
+        return {
+          bg: "from-violet-50 via-purple-50 to-pink-50 dark:from-violet-950/20 dark:via-purple-950/20 dark:to-pink-950/20",
+          accent: "from-violet-500 to-purple-500",
+          border: "border-violet-200/50 dark:border-violet-700/50",
+        }
+      default:
+        return {
+          bg: "from-slate-50 via-gray-50 to-zinc-50 dark:from-slate-950/20 dark:via-gray-950/20 dark:to-zinc-950/20",
+          accent: "from-slate-500 to-gray-500",
+          border: "border-slate-200/50 dark:border-slate-700/50",
+        }
+    }
+  }
+
+  const currentTheme = getCategoryTheme(getCurrentCategory())
+
   return (
-    <div className="flex h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
+    <div className={`flex h-screen overflow-hidden bg-gradient-to-br ${currentTheme.bg} transition-all duration-500`}>
+      {/* Mobile Overlay */}
+      {isMobile && sidebarOpen && (
+        <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setSidebarOpen(false)} />
+      )}
+
       {/* Enhanced Sidebar */}
       <motion.aside
-        className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-r border-white/20 dark:border-slate-700/50 fixed h-full overflow-hidden transition-all duration-500 ease-in-out z-40 shadow-2xl"
-        animate={{ width: sidebarOpen ? (aiHelperOpen ? 800 : 320) : 80 }}
+        className={`bg-white/90 dark:bg-slate-900/90 backdrop-blur-xl border-r border-white/20 dark:border-slate-700/50 ${
+          isMobile ? "fixed" : "relative"
+        } h-full overflow-hidden transition-all duration-500 ease-in-out z-40 shadow-2xl flex-shrink-0`}
+        animate={{
+          width: sidebarOpen ? (aiHelperOpen && !isMobile ? "100vw" : isMobile ? 280 : 320) : 80,
+          x: isMobile && !sidebarOpen ? -280 : 0,
+        }}
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10 dark:border-slate-700/50 bg-gradient-to-r from-violet-500/10 via-sky-500/10 to-emerald-500/10">
+        <div
+          className={`flex items-center justify-between p-4 border-b border-white/10 dark:border-slate-700/50 bg-gradient-to-r ${currentTheme.accent}/10`}
+        >
           <motion.div
             className="flex items-center gap-3"
             animate={{ opacity: sidebarOpen ? 1 : 0 }}
@@ -75,7 +210,9 @@ export default function DashboardLayout({ children }: { children: any }) {
             {sidebarOpen && (
               <>
                 <div className="relative">
-                  <div className="w-10 h-10 bg-gradient-to-br from-violet-500 to-emerald-500 rounded-xl flex items-center justify-center shadow-lg">
+                  <div
+                    className={`w-10 h-10 bg-gradient-to-br ${currentTheme.accent} rounded-xl flex items-center justify-center shadow-lg`}
+                  >
                     <Database className="h-5 w-5 text-white" />
                   </div>
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center">
@@ -83,7 +220,9 @@ export default function DashboardLayout({ children }: { children: any }) {
                   </div>
                 </div>
                 <div>
-                  <h1 className="text-lg font-bold bg-gradient-to-r from-violet-600 via-sky-600 to-emerald-600 bg-clip-text text-transparent">
+                  <h1
+                    className={`text-lg font-bold bg-gradient-to-r ${currentTheme.accent} bg-clip-text text-transparent`}
+                  >
                     DSA Master
                   </h1>
                   <p className="text-xs text-muted-foreground">AI-Powered Learning</p>
@@ -93,14 +232,14 @@ export default function DashboardLayout({ children }: { children: any }) {
           </motion.div>
 
           <div className="flex items-center gap-2">
-            {sidebarOpen && (
+            {sidebarOpen && !isMobile && (
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setAiHelperOpen(!aiHelperOpen)}
+                onClick={toggleAiHelper}
                 className={`h-8 w-8 rounded-lg transition-all duration-300 ${
                   aiHelperOpen
-                    ? "bg-gradient-to-r from-violet-500 to-emerald-500 text-white shadow-lg"
+                    ? `bg-gradient-to-r ${currentTheme.accent} text-white shadow-lg`
                     : "hover:bg-violet-100 dark:hover:bg-violet-900/20"
                 }`}
               >
@@ -121,19 +260,27 @@ export default function DashboardLayout({ children }: { children: any }) {
 
         <div className="flex h-[calc(100vh-5rem)]">
           {/* Navigation Section */}
-          <div className={`${aiHelperOpen && sidebarOpen ? "w-80" : "flex-1"} transition-all duration-500`}>
+          <div
+            className={`${aiHelperOpen && sidebarOpen && !isMobile ? "w-80" : "flex-1"} transition-all duration-500 flex flex-col`}
+          >
             {/* AI Features Showcase */}
             {sidebarOpen && (
               <motion.div
-                className="p-4 border-b border-white/10 dark:border-slate-700/50"
+                className="p-4 border-b border-white/10 dark:border-slate-700/50 flex-shrink-0"
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
               >
-                <div className="bg-gradient-to-r from-violet-500/10 to-emerald-500/10 rounded-xl p-3 border border-violet-200/50 dark:border-violet-700/50">
+                <div
+                  className={`bg-gradient-to-r ${currentTheme.accent}/10 rounded-xl p-3 border ${currentTheme.border}`}
+                >
                   <div className="flex items-center gap-2 mb-2">
-                    <CurrentFeatureIcon className="h-4 w-4 text-violet-600" />
-                    <span className="text-sm font-medium text-violet-700 dark:text-violet-300">
+                    <CurrentFeatureIcon
+                      className={`h-4 w-4 text-${getCurrentCategory() === "data" ? "blue" : getCurrentCategory() === "algorithm" ? "violet" : "slate"}-600`}
+                    />
+                    <span
+                      className={`text-sm font-medium text-${getCurrentCategory() === "data" ? "blue" : getCurrentCategory() === "algorithm" ? "violet" : "slate"}-700 dark:text-${getCurrentCategory() === "data" ? "blue" : getCurrentCategory() === "algorithm" ? "violet" : "slate"}-300`}
+                    >
                       {aiFeatures[activeFeature].title}
                     </span>
                   </div>
@@ -144,7 +291,7 @@ export default function DashboardLayout({ children }: { children: any }) {
                         key={index}
                         className={`h-1 rounded-full transition-all duration-300 ${
                           index === activeFeature
-                            ? "w-4 bg-gradient-to-r from-violet-500 to-emerald-500"
+                            ? `w-4 bg-gradient-to-r ${currentTheme.accent}`
                             : "w-1 bg-slate-300 dark:bg-slate-600"
                         }`}
                       />
@@ -177,7 +324,22 @@ export default function DashboardLayout({ children }: { children: any }) {
                               : "hover:bg-white/50 dark:hover:bg-slate-800/50 hover:text-violet-700 dark:hover:text-violet-300"
                           }`}
                           title={!sidebarOpen ? item.title : undefined}
+                          onClick={() => {
+                            if (isMobile) setSidebarOpen(false)
+                            if (aiHelperOpen) setAiHelperOpen(false)
+                          }}
                         >
+                          {/* Category indicator */}
+                          <div
+                            className={`absolute left-0 top-0 bottom-0 w-1 ${
+                              item.category === "data"
+                                ? "bg-blue-500"
+                                : item.category === "algorithm"
+                                  ? "bg-violet-500"
+                                  : "bg-slate-500"
+                            } ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-50"} transition-opacity duration-300`}
+                          />
+
                           {/* Background animation */}
                           {!isActive && (
                             <div
@@ -226,15 +388,21 @@ export default function DashboardLayout({ children }: { children: any }) {
             {/* Quick Stats */}
             {sidebarOpen && (
               <motion.div
-                className="p-4 border-t border-white/10 dark:border-slate-700/50"
+                className="p-4 border-t border-white/10 dark:border-slate-700/50 flex-shrink-0"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
                 <div className="grid grid-cols-2 gap-2">
-                  <div className="bg-gradient-to-br from-violet-500/10 to-purple-500/10 rounded-lg p-2 border border-violet-200/50 dark:border-violet-700/50">
+                  <div
+                    className={`bg-gradient-to-br ${currentTheme.accent}/10 rounded-lg p-2 border ${currentTheme.border}`}
+                  >
                     <div className="text-xs text-muted-foreground">Progress</div>
-                    <div className="text-sm font-bold text-violet-600">75%</div>
+                    <div
+                      className={`text-sm font-bold text-${getCurrentCategory() === "data" ? "blue" : getCurrentCategory() === "algorithm" ? "violet" : "slate"}-600`}
+                    >
+                      75%
+                    </div>
                   </div>
                   <div className="bg-gradient-to-br from-emerald-500/10 to-teal-500/10 rounded-lg p-2 border border-emerald-200/50 dark:border-emerald-700/50">
                     <div className="text-xs text-muted-foreground">Streak</div>
@@ -243,13 +411,23 @@ export default function DashboardLayout({ children }: { children: any }) {
                 </div>
               </motion.div>
             )}
+
+            {/* Mobile AI Helper Button */}
+            {isMobile && sidebarOpen && (
+              <div className="p-4 border-t border-white/10 dark:border-slate-700/50 flex-shrink-0">
+                <Button onClick={toggleAiHelper} className={`w-full btn-gradient h-12 text-sm font-medium`}>
+                  <Bot className="h-4 w-4 mr-2" />
+                  Open AI Assistant
+                </Button>
+              </div>
+            )}
           </div>
 
-          {/* AI Helper Panel */}
+          {/* Desktop AI Helper Panel - Full Screen */}
           <AnimatePresence>
-            {aiHelperOpen && sidebarOpen && (
+            {aiHelperOpen && sidebarOpen && !isMobile && (
               <motion.div
-                className="w-96 border-l border-white/10 dark:border-slate-700/50 bg-gradient-to-b from-violet-50/50 to-sky-50/50 dark:from-violet-900/20 dark:to-sky-900/20"
+                className="flex-1 border-l border-white/10 dark:border-slate-700/50 bg-gradient-to-br from-slate-900 via-violet-900 to-blue-900"
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 100 }}
@@ -257,33 +435,46 @@ export default function DashboardLayout({ children }: { children: any }) {
               >
                 <div className="h-full flex flex-col">
                   {/* AI Helper Header */}
-                  <div className="p-4 border-b border-white/10 dark:border-slate-700/50">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center gap-2">
-                        <div className="p-2 rounded-lg bg-gradient-to-r from-violet-500 to-emerald-500">
-                          <Bot className="h-4 w-4 text-white" />
+                  <div className="p-6 border-b border-white/10 bg-gradient-to-r from-violet-600/20 to-blue-600/20 backdrop-blur-sm flex-shrink-0">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className="p-3 rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 shadow-lg">
+                          <Bot className="h-8 w-8 text-white" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-sm">AI Assistant</h3>
-                          <p className="text-xs text-muted-foreground">Ready to help</p>
+                          <h1 className="text-2xl font-bold text-white">AI Code Assistant</h1>
+                          <p className="text-white/70">Full Screen Mode • {getCurrentTopic()}</p>
+                          <div className="flex items-center gap-2 mt-2">
+                            <Badge className="bg-green-500/20 text-green-300 border-green-500/30">
+                              <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse" />
+                              Online
+                            </Badge>
+                            <Badge className="bg-white/10 text-white/80 border-white/20">
+                              Category: {getCurrentCategory()}
+                            </Badge>
+                          </div>
                         </div>
                       </div>
-                      <Badge
-                        variant="outline"
-                        className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setAiHelperOpen(false)}
+                        className="h-12 w-12 rounded-full text-white hover:bg-white/10 transition-all duration-300"
                       >
-                        Online
-                      </Badge>
-                    </div>
-                    <Separator className="my-2" />
-                    <div className="text-xs text-muted-foreground">
-                      Current Topic: <span className="font-medium text-violet-600">{getCurrentTopic()}</span>
+                        <X className="h-6 w-6" />
+                      </Button>
                     </div>
                   </div>
 
                   {/* AI Helper Content */}
                   <div className="flex-1 overflow-hidden">
-                    <AICodeHelper topic={getCurrentTopic()} initialCode="" language="python" />
+                    <AICodeHelper
+                      topic={getCurrentTopic()}
+                      category={getCurrentCategory()}
+                      initialCode=""
+                      language="python"
+                      fullScreen={true}
+                    />
                   </div>
                 </div>
               </motion.div>
@@ -292,29 +483,97 @@ export default function DashboardLayout({ children }: { children: any }) {
         </div>
       </motion.aside>
 
-      {/* Main content */}
-      <div
-        className={`flex-1 flex flex-col transition-all duration-500 ease-in-out ${
-          sidebarOpen ? (aiHelperOpen ? "ml-[800px]" : "ml-80") : "ml-20"
-        }`}
-      >
-        <Header />
-        <main className="flex-1 overflow-y-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="min-h-full"
-          >
-            {children}
-          </motion.div>
-        </main>
-        <Footer />
-      </div>
-
-      {/* AI Helper Toggle Button (when sidebar is closed) */}
+      {/* Full Screen AI Helper (Mobile) */}
       <AnimatePresence>
-        {!sidebarOpen && (
+        {aiFullScreen && (
+          <motion.div
+            className="fixed inset-0 z-50 bg-gradient-to-br from-slate-900 via-violet-900 to-blue-900"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            transition={{ duration: 0.5, type: "spring", damping: 25 }}
+          >
+            <div className="h-full flex flex-col">
+              {/* Full Screen Header */}
+              <div className="p-4 border-b border-white/10 bg-gradient-to-r from-violet-600/20 to-blue-600/20 backdrop-blur-sm flex-shrink-0">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 rounded-xl bg-gradient-to-r from-violet-500 to-blue-500 shadow-lg">
+                      <Bot className="h-6 w-6 text-white" />
+                    </div>
+                    <div>
+                      <h1 className="text-xl font-bold text-white">AI Code Assistant</h1>
+                      <p className="text-sm text-white/70">Full Screen Mode • {getCurrentTopic()}</p>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setAiFullScreen(false)}
+                    className="h-10 w-10 rounded-full text-white hover:bg-white/10"
+                  >
+                    <X className="h-5 w-5" />
+                  </Button>
+                </div>
+              </div>
+
+              {/* Full Screen Content */}
+              <div className="flex-1 overflow-hidden">
+                <AICodeHelper
+                  topic={getCurrentTopic()}
+                  category={getCurrentCategory()}
+                  initialCode=""
+                  language="python"
+                  fullScreen={true}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Main content - Hidden when AI is open */}
+      <AnimatePresence>
+        {!aiHelperOpen && (
+          <motion.div
+            className="flex-1 flex flex-col min-w-0 overflow-hidden"
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            {/* Mobile Header with Menu */}
+            {isMobile && (
+              <div className="flex items-center justify-between p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm border-b border-white/20 dark:border-slate-700/50 md:hidden flex-shrink-0">
+                <Button variant="ghost" size="sm" onClick={() => setSidebarOpen(true)} className="h-10 w-10">
+                  <Menu className="h-5 w-5" />
+                </Button>
+                <h1 className="text-lg font-semibold">DSA Master</h1>
+                <Button variant="ghost" size="sm" onClick={() => setAiFullScreen(true)} className="h-10 w-10">
+                  <Bot className="h-5 w-5" />
+                </Button>
+              </div>
+            )}
+
+            <Header />
+            <main className="flex-1 overflow-y-auto">
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                className="min-h-full"
+              >
+                {children}
+              </motion.div>
+            </main>
+            <Footer />
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Floating AI Button (Desktop, when sidebar closed) */}
+      <AnimatePresence>
+        {!sidebarOpen && !isMobile && (
           <motion.div
             className="fixed bottom-6 left-6 z-50"
             initial={{ opacity: 0, scale: 0 }}
@@ -327,9 +586,9 @@ export default function DashboardLayout({ children }: { children: any }) {
                 setSidebarOpen(true)
                 setAiHelperOpen(true)
               }}
-              className="h-14 w-14 rounded-full bg-gradient-to-r from-violet-500 to-emerald-500 hover:from-violet-600 hover:to-emerald-600 text-white shadow-2xl hover:shadow-3xl transition-all duration-300 group"
+              className={`h-14 w-14 rounded-full bg-gradient-to-r ${currentTheme.accent} hover:shadow-2xl transition-all duration-300 group shadow-lg`}
             >
-              <Bot className="h-6 w-6 group-hover:scale-110 transition-transform duration-300" />
+              <Bot className="h-6 w-6 text-white group-hover:scale-110 transition-transform duration-300" />
             </Button>
           </motion.div>
         )}
